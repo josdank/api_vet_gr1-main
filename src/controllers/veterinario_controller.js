@@ -32,22 +32,24 @@ const confirmEmail = async (req, res) => {
     res.status(200).json({msg:"Token confirmado, ya puedes iniciar sesión"}) 
 }
 
-const login =async (req, res) => {
+const login = async (req, res) => {
     //paso 1 - Tomar datos del request
     const {email, password} = req.body
     // paso 2 - Validar datos
     if(Object.values(req.body).includes(""))return res.status(400).json({msg:'Lo sentimos debes llenar todos los campos'})
 
     const veterinarioBDD = await veterinario.findOne({email})
-    if (veterinarioBDD.confirmEmail===false) return res.status(400).json({msg:'Lo sentimos debes validar tu cuenta'})
+    if (veterinarioBDD?.confirmEmail===false) return res.status(400).json({msg:'Lo sentimos debes validar tu cuenta'})
 
-    if(!verificarEmailBDD) return res.status(400).json({msg:'Lo sentimos el email no se encuentra registrado'})
-    const verificarPassword = veterinarioBDD.matchPassword(password)
+    if(!veterinarioBDD) return res.status(400).json({msg:'Lo sentimos el email no se encuentra registrado'})
+    const verificarPassword = await  veterinarioBDD.matchPassword(password)
     if (!verificarPassword) return res.status(400).json({msg:'Lo sentimos el password no es el correcto'})
+
     // paso 3 - interactuar con la bdd
-     
+    res.status(200).json(veterinarioBDD)
 }
 export {
     registro,
+    login,
     confirmEmail
 }
