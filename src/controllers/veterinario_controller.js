@@ -127,5 +127,3 @@ export {
     actualizarPerfil,
     actualizarPassword
 }
-
-// Componentes de veterinario 
